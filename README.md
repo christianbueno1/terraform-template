@@ -17,7 +17,14 @@ terraform -version
 # sao paulo
 sa-east-1
 
+# terraform
+# initialize terraform
 terraform init
+# plan deployment
+# show AMI id, ec2 instance details
+terraform plan
+# apply changes
+# provisions
 terraform apply
 
 # delete, destroy
@@ -27,3 +34,8 @@ terraform destroy
 
 # Resources
 - aws_iam_role
+
+# AMI
+- amazon linux 2023, check id on console gui
+- t2.micro, 1vCPU, 1GiB, free tier
+
