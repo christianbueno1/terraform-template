@@ -5,9 +5,10 @@ data "aws_ami" "amazon_linux_2023" {
   filter {
     name   = "name"
     # values = ["al2023-ami-*-x86_64-gp2"] # Amazon Linux 2023 AMI pattern
+    values = ["al2023-ami-*-x86_64"]
     # values = ["al2023-ami-2023*"]
     # values = ["al2023-ami-2023*-x86_64"]
-    values = ["/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"]
+    # values = ["/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"]
   }
   # filter {
   #   name = "architecture"
@@ -27,6 +28,7 @@ data "aws_ami" "amazon_linux_2023" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = "t3.micro" # Change as needed
+  key_name      = var.key_pair_name # Use your existing key pair here
 
   # Attach the security group
   vpc_security_group_ids = [aws_security_group.web_sg.id]
@@ -42,6 +44,8 @@ resource "aws_instance" "web" {
   EOF
 
   tags = {
-    Name = "al2023-web"
+    Name = "web-server"
+    # Environment = "production"
+    Environment = "development"
   }
 }

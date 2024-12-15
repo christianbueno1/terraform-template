@@ -9,6 +9,7 @@ resource "aws_security_group" "web_sg" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Replace with a restricted IP range for better security
+    # cidr_blocks = ["203.0.113.25/32"] # Replace with your actual IP
   }
 
   # Allow inbound HTTP
