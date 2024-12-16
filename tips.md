@@ -23,3 +23,39 @@ terraform.tfvars
 *.pem
 ```
 This prevents sensitive data from being accidentally committed to repositories.
+
+## AWS
+```
+# list EC2
+aws ec2 describe-instance-status --instance-ids
+
+# decribe
+aws ec2 describe-instances --instance-ids <instance-id>
+aws ec2 describe-instances --instance-ids --instance-ids i-049b1fbabe5ab4ae6
+aws ec2 describe-instances --instance-ids --instance-ids i-049b1fbabe5ab4ae6 | tee
+#
+aws ec2 describe-instances --instance-ids i-049b1fbabe5ab4ae6 --query "Reservations[*].Instances[*].PublicIpAddress" --output text | tee
+#
+aws ec2 describe-instances --instance-ids i-049b1fbabe5ab4ae6 --query "Reservations[*].Instances[*].State.Name" --output text | tee
+#
+aws ec2 describe-instances --instance-ids i-049b1fbabe5ab4ae6 --query "Reservations[*].Instances[*].Tags" --output json | tee
+#
+# --output text
+aws ec2 describe-instances --output text | tee
+#
+aws ec2 describe-instances \
+--instance-ids i-049b1fbabe5ab4ae6 \
+--query "Reservations[*].Instances[*].PublicDnsName" \
+--output text | tee
+
+# user
+ec2-user
+#
+ssh -i "chris@f40.pem" ec2-user@ec2-52-91-223-134.compute-1.amazonaws.com
+#
+# default pem, private-key file
+ssh ec2-user@ec2-52-91-223-134.compute-1.amazonaws.com
+
+# local
+ssh-keygen -l -E sha256 -f ~/.ssh/known_hosts
+```

@@ -43,6 +43,10 @@ terraform destroy
 
 # Accessing the EC2 instance
 ```
+# using kitty terminal
+# use word kitten the first time
+kitten ssh -i /path/to/mykeypair.pem ec2-user@<INSTANCE_PUBLIC_IP>
+#
 ssh -i /path/to/mykeypair.pem ec2-user@<INSTANCE_PUBLIC_IP>
 
 ```
