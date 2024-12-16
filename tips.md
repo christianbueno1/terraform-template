@@ -28,13 +28,15 @@ This prevents sensitive data from being accidentally committed to repositories.
 ```
 # list EC2
 aws ec2 describe-instance-status --instance-ids
+aws ec2 describe-instance-status --instance-ids --query "InstanceStatuses[].InstanceId" | tee
 
 # decribe
+aws ec2 describe-instances --instance-ids
 aws ec2 describe-instances --instance-ids <instance-id>
-aws ec2 describe-instances --instance-ids --instance-ids i-049b1fbabe5ab4ae6
-aws ec2 describe-instances --instance-ids --instance-ids i-049b1fbabe5ab4ae6 | tee
+aws ec2 describe-instances --instance-ids i-0f24cf3a355ae43a1
+aws ec2 describe-instances --instance-ids i-0f24cf3a355ae43a1 | tee
 #
-aws ec2 describe-instances --instance-ids i-049b1fbabe5ab4ae6 --query "Reservations[*].Instances[*].PublicIpAddress" --output text | tee
+aws ec2 describe-instances --instance-ids i-0f24cf3a355ae43a1 --query "Reservations[*].Instances[*].PublicIpAddress" --output text | tee
 #
 aws ec2 describe-instances --instance-ids i-049b1fbabe5ab4ae6 --query "Reservations[*].Instances[*].State.Name" --output text | tee
 #
@@ -44,9 +46,22 @@ aws ec2 describe-instances --instance-ids i-049b1fbabe5ab4ae6 --query "Reservati
 aws ec2 describe-instances --output text | tee
 #
 aws ec2 describe-instances \
---instance-ids i-049b1fbabe5ab4ae6 \
+--instance-ids i-0f24cf3a355ae43a1 \
 --query "Reservations[*].Instances[*].PublicDnsName" \
 --output text | tee
+#
+aws ec2 describe-instances \
+--instance-ids i-0f24cf3a355ae43a1 \
+--query "Reservations[].Instances[].{PublicIp:PublicIpAddress, host:PublicDnsName}" \
+--output text | tee
+#
+# vertically
+aws ec2 describe-instances \
+--instance-ids i-0f24cf3a355ae43a1 \
+--query "Reservations[].Instances[].{PublicIp:PublicIpAddress, Host:PublicDnsName}" \
+--output text | awk 'BEGIN {OFS=": "} {print "PublicIp", $1; print "Host", $2}' | tee
+
+
 
 # user
 ec2-user
@@ -54,7 +69,8 @@ ec2-user
 ssh -i "chris@f40.pem" ec2-user@ec2-52-91-223-134.compute-1.amazonaws.com
 #
 # default pem, private-key file
-ssh ec2-user@ec2-52-91-223-134.compute-1.amazonaws.com
+kitten ssh ec2-user@ec2-54-145-165-246.compute-1.amazonaws.com
+ssh ec2-user@ec2-54-145-165-246.compute-1.amazonaws.com
 
 # local
 ssh-keygen -l -E sha256 -f ~/.ssh/known_hosts

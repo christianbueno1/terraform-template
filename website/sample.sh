@@ -1,18 +1,54 @@
 #!/bin/bash
 
+# Starting setup process
+echo "Starting setup process..."
+echo "Installing HTTPD server"
+
+# Update the system and install necessary packages
 sudo dnf update -y
-# unzip is yet installed
-sudo dnf install bash-completion vim-enhanced httpd wget -y
+sudo dnf install bash-completion vim-enhanced httpd wget unzip -y
 
-systemctl enable httpd
-systemctl start httpd
+echo "Enabling and starting HTTPD service"
+sudo systemctl enable httpd
+sudo systemctl start httpd
 
-sudo wget https://www.tooplate.com/download/2135_mini_finance.zip
+echo "HTTPD installed successfully!"
 
-# create directory sample.com/public_html
-sudo mkdir -p /var/www/sample.com/public_html
+# Download and prepare the website content
+WEBSITE_URL="https://www.tooplate.com/download/2135_mini_finance"
+DOWNLOAD_DIR="/tmp"
+WEBSITE_DIR="/var/www/sample.com/public_html"
 
-sudo unzip 2135_mini_finance.zip -d /var/www/sample.com/public_html
+# Create directories
+sudo mkdir -p "$WEBSITE_DIR"
 
+# Download and unzip website files
+echo "Downloading and extracting website files"
+wget -c "$WEBSITE_URL"
+sudo unzip -o 2135_mini_finance -d "$DOWNLOAD_DIR"
+sudo mv "$DOWNLOAD_DIR/2135_mini_finance"/* "$WEBSITE_DIR"
+
+# Set permissions
+echo "Setting file permissions"
+sudo chown -R apache:apache "$WEBSITE_DIR"
+sudo chmod -R 755 "$WEBSITE_DIR"
+
+# Configure VirtualHost
+VHOST_CONF="/etc/httpd/conf.d/web.conf"
+
+sudo bash -c "cat > $VHOST_CONF" <<EOL
+<VirtualHost *:80>
+    ServerName web.example.com
+    DocumentRoot $WEBSITE_DIR
+    DirectoryIndex index.html
+    ErrorLog /var/log/httpd/example.com_error.log
+    CustomLog /var/log/httpd/example.com_requests.log combined
+</VirtualHost>
+EOL
+
+# Restart HTTPD to apply changes
+echo "Restarting HTTPD service"
 sudo systemctl restart httpd
-echo "<h1>Welcome to Amazon Linux 2023!</h1><p>"O mueres siendo un héroe o vives lo suficiente para verte convertido en un villano."</p>" > /var/www/html/index.html
+
+# Completion message
+echo "Setup completed successfully. The website is available at web.example.com"

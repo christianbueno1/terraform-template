@@ -8,10 +8,25 @@ variable "aws_region" {
     error_message = "Must be a valid AWS region name (e.g. us-east-1, eu-west-1)"
   }
 }
-variable "key_pair_name" {
-  description = "The name of the key pair to use for the instance."
+variable "public_key_path" {
+  description = "The path to the public key file."
   type        = string
-  sensitive = true
+  default     = "/home/chris/.ssh/id_rsa.pub"
+
+  validation {
+    condition     = fileexists(var.public_key_path)
+    error_message = "SSH public key file not found. Please check the path."
+  }
+}
+variable "private_key_path" {
+  description = "The path to the private key file."
+  type        = string
+  default     = "/home/chris/.ssh/id_rsa"
+
+  validation {
+    condition     = fileexists(var.private_key_path)
+    error_message = "SSH private key file not found. Please check the path."
+  }
 }
 variable "allowed_ssh_cidr" {
   description = "CIDR block allowed for SSH access"

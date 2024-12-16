@@ -28,7 +28,8 @@ data "aws_ami" "amazon_linux_2023" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = "t3.micro"        # Change as needed
-  key_name      = var.key_pair_name # Use your existing key pair here
+  # key_name      = var.key_pair_name # Use your existing key pair here
+  key_name = aws_key_pair.deployer.key_name
 
   # Attach the security group
   vpc_security_group_ids = [aws_security_group.web_sg.id]
@@ -58,13 +59,20 @@ resource "aws_instance" "web" {
     Environment = "development"
   }
   provisioner "file" {
-    source = "sample.sh"
+    source      = "sample.sh"
     destination = "/tmp/sample.sh"
   }
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/sample.sh",
       "/tmp/sample.sh",
+      "cat /tmp/sample.sh",
     ]
+  }
+  connection {
+    type        = "ssh"
+    user        = var.USER
+    private_key = file(var.private_key_path)
+    host        = self.public_ip
   }
 }
