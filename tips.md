@@ -59,3 +59,6 @@ ssh ec2-user@ec2-52-91-223-134.compute-1.amazonaws.com
 # local
 ssh-keygen -l -E sha256 -f ~/.ssh/known_hosts
 ```
+
+## web exmaple
+- https://www.tooplate.com/view/2135-mini-finance
