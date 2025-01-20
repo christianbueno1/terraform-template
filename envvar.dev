@@ -1,6 +1,7 @@
 # copy this in your ~/.bshrc or ~/.zshrc
 # after edit run zsh
 #
+# AWS
 # public key
 export TF_VAR_public_key_path="/home/chris/.ssh/id_ed25519.pub"
 # private key
@@ -8,3 +9,6 @@ export TF_VAR_private_key_path="/home/chris/.ssh/id_ed25519"
 #
 export TF_VAR_aws_region="us-east-1"
 #export TF_VAR_allowed_ssh_cidr="203.0.113.25/32"
+
+# Digital Ocean
+export TF_VAR_do_token="12345"
