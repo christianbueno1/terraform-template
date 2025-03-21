@@ -32,6 +32,13 @@ doctl compute image list-distribution --format ID,Distribution,Slug
 
 # Create a New Droplet:
 doctl compute droplet create <droplet-name> --region <region-slug> --image <image-slug> --size <size-slug>
+doctl compute droplet create fedora41-2 --region nyc3 --image fedora-41-x64 --size s-1vcpu-4gb
+
+# fora container projects, $24/month
+doctl compute droplet create fedora41-2 --region nyc3 --image fedora-41-x64 --size s-2vcpu-4gb
+
+# list size of droplet
+doctl compute size list
 
 # Delete a Droplet:
 doctl compute droplet delete <droplet-id>
