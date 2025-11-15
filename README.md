@@ -112,3 +112,56 @@ Create a file named terraform.tfvars and add the following line:
 # terraform.tfvars
 private_key_path = "/path/to/your/private/key.pem"
 ```
+
+## To enable OpenTofu tab-completion in Zsh:
+
+```bash
+tofu init
+tofu validate
+
+tofu -install-autocomplete
+# Then, restart your terminal or source your Zsh configuration file:
+source ~/.zshrc
+
+# To uninstall OpenTofu tab-completion:
+tofu -uninstall-autocomplete
+
+
+
+cd /home/chris/projects/terraform-template/droplet-do
+tofu plan -out plan.tfplan
+tofu show -json plan.tfplan | jq '.'   # optional: inspect plan JSON
+# apply when ready
+tofu apply plan.tfplan
+# After apply, add the host to your SSH config with the script we added:
+# adds Host do-love with the IP from the OpenTofu output (droplet_ip)
+./scripts/add_do_host.sh do-love
+
+# Example usage with a variable file
+# Simula lo que va a pasar:
+tofu plan -var-file="tofu.tfvars"
+# apply changes:
+tofu apply -var-file="tofu.tfvars"
+# after apply, add the host to your SSH config with the script we added:
+./scripts/add_do_host.sh do-love
+
+# Destroy the droplet
+tofu destroy -auto-approve
+
+```
+
+## 1. terraform.auto.tfvars or *.auto.tfvars:
+You can create a file named `secrets.auto.tfvars` in the same directory as your Terraform configuration files. This file will be automatically loaded by OpenTofu and can contain sensitive information like your DigitalOcean API token.
+```hcl
+# secrets.auto.tfvars
+do_token = "your-digitalocean-token-here"
+```
+## 2. Environment-specific variable files:
+Ideal for environment-specific veariables, dev, prod, etc.Example
+dev.auto.tfvars, prod.auto.tfvars, etc.
+## 3. opentofu.tfvars:
+Automatic Loading: Like terraform.tfvars, a file named opentofu.tfvars would likely be automatically loaded by OpenTofu.
+## Summary and Best Practices:
+- **For sensitive data:** Use a custom .tfvars file (e.g., secrets.tfvars) and load it explicitly with -var-file. Crucially, never commit this file to version control in plain text.
+- **For environment-specific variables:** Use *.auto.tfvars (e.g., dev.auto.tfvars, prod.auto.tfvars) for automatic loading.
+- **For general, non-sensitive variables:** terraform.tfvars (or opentofu.tfvars if using OpenTofu) is appropriate for automatic loading of common variables.

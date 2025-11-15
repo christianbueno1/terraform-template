@@ -1,0 +1,37 @@
+name: OpenTofu checks
+
+on:
+  pull_request:
+    paths:
+      - 'droplet-do/**'
+
+env:
+  TFOU_VERSION: v1.10.7
+
+jobs:
+  fmt-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OpenTofu
+        run: |
+          VERSION=${{ env.TFOU_VERSION }}
+          ASSET="tofu_${VERSION#v}_linux_amd64.tar.gz"
+          URL="https://github.com/opentofu/opentofu/releases/download/${VERSION}/${ASSET}"
+          echo "Downloading OpenTofu from $URL"
+          curl -fsSL -o /tmp/opentofu.tar.gz "$URL"
+          tar -C /tmp -xzf /tmp/opentofu.tar.gz
+          sudo mv /tmp/tofu /usr/local/bin/
+          sudo chmod +x /usr/local/bin/tofu
+          tofu --version
+
+      - name: Run tofu fmt
+        working-directory: ./droplet-do
+        run: tofu fmt -check -recursive
+
+      - name: Init and validate with OpenTofu
+        working-directory: ./droplet-do
+        run: |
+          tofu init -backend=false
+          tofu validate
