@@ -25,10 +25,18 @@ do_token = "your-digitalocean-token-here"
 
 Then:
 
-```
+```bash
 tofu init
-tofu plan
-tofu apply
+tofu validate
+#
+# tofu plan
+tofu plan -out plan.tfplan
+#
+# tofu apply plan.tfplan
+tofu apply "plan.tfplan"
+
+# show outputs
+tofu output droplet_ip
 ```
 
 Customizing

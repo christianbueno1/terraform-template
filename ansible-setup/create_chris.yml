@@ -1,0 +1,35 @@
+- name: Configure administrative user chris
+  hosts: droplet
+  become: yes
+  tasks:
+
+    - name: Ensure user chris exists
+      user:
+        name: chris
+        shell: /bin/bash
+        groups: wheel
+        append: yes
+        create_home: yes
+
+    - name: Create .ssh directory for chris
+      file:
+        path: /home/chris/.ssh
+        state: directory
+        owner: chris
+        group: chris
+        mode: '0700'
+
+    - name: Add SSH public key for chris
+      copy:
+        src: ~/.ssh/id_ed25519_do.pub
+        dest: /home/chris/.ssh/authorized_keys
+        owner: chris
+        group: chris
+        mode: '0600'
+
+    - name: Allow wheel group passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
