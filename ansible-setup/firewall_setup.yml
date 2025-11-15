@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+    firewall_allowed_ports:
+      - "22/tcp"     # SSH
+      - "80/tcp"     # HTTP
+      - "443/tcp"    # HTTPS
+      - "3000/tcp"   # FastAPI
+      - "5173/tcp"   # Vite dev server
+
+  roles:
+    - firewall

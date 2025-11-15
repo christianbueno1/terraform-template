@@ -1,0 +1,44 @@
+---
+- name: Enable and configure firewalld on Fedora 42
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install firewalld
+      ansible.builtin.dnf:
+        name: firewalld
+        state: present
+
+    - name: Enable firewalld service
+      ansible.builtin.service:
+        name: firewalld
+        enabled: true
+
+    - name: Start firewalld service
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+
+    - name: Allow SSH
+      ansible.posix.firewalld:
+        service: ssh
+        permanent: true
+        state: enabled
+        immediate: yes
+
+    - name: Allow HTTP (optional)
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: yes
+
+    - name: Allow HTTPS (optional)
+      ansible.posix.firewalld:
+        service: https
+        permanent: true
+        state: enabled
+        immediate: yes
+
+    - name: Reload firewalld
+      ansible.builtin.command: firewall-cmd --reload

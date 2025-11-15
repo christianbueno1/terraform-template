@@ -1,0 +1,12 @@
+# ---
+# - name: reload firewalld
+#   ansible.builtin.service:
+#     name: firewalld
+#     state: reloaded
+
+# using systemd to reload firewalld
+---
+- name: reload firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    state: reloaded
