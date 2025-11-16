@@ -4,6 +4,8 @@ firewall_allowed_ports:
   - "22/tcp"     # SSH
   - "80/tcp"     # HTTP
   - "443/tcp"    # HTTPS
+  # add n8n port 5678/tcp
+  # - "5678/tcp"   # n8n
 
 # Servicios de firewalld opcionales
 firewall_allowed_services: []

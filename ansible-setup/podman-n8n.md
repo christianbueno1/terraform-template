@@ -52,6 +52,15 @@ podman run -d \
   -v n8n_data:/home/node/.n8n \
   docker.n8n.io/n8nio/n8n
 
+```
 
 
+## posrt forwading
+```bash
+ssh -L 5678:localhost:5678 usuario@167.99.57.214
+# or use the host alias do-joy
+ssh -L 5678:localhost:5678 do-joy
+
+# Luego, en tu navegador local:
+http://localhost:5678
 ```

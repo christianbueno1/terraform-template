@@ -81,6 +81,9 @@ ansible-playbook -i inventory.ini firewall_setup.yml
 # add
 ansible-playbook -i inventory.ini firewall_setup.yml \
   -e '{"firewall_extra_ports": ["9000/tcp"]}'
+# add n8n port 5678/tcp
+ansible-playbook -i inventory.ini firewall_setup.yml \
+  -e '{"firewall_extra_ports": ["5678/tcp"]}'
 
 # Si quieres añadir varios:
 ansible-playbook -i inventory.ini firewall_setup.yml \
