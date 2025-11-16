@@ -145,8 +145,15 @@ tofu apply -var-file="tofu.tfvars"
 # after apply, add the host to your SSH config with the script we added:
 ./scripts/add_do_host.sh do-love
 
-# Destroy the droplet
+
+# 2️⃣ Verificar qué se destruirá
+tofu plan -destroy
+# 3️⃣ Destruir el droplet
+tofu destroy
+#
+# Destroy the droplet without confirmation prompt
 tofu destroy -auto-approve
+
 
 ```
 
