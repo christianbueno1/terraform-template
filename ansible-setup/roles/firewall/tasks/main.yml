@@ -19,8 +19,18 @@
     port: "{{ item }}"
     permanent: true
     state: enabled
-    immediate: yes
-  loop: "{{ firewall_allowed_ports }}"
+    immediate: true
+  loop: "{{ firewall_allowed_ports + (firewall_extra_ports | default([]) | list) }}"
+  notify: reload firewalld
+
+- name: Remove unwanted ports
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: disabled
+    immediate: true
+  loop: "{{ firewall_remove_ports }}"
+  when: firewall_remove_ports | length > 0
   notify: reload firewalld
 
 - name: Allow required services
@@ -28,7 +38,7 @@
     service: "{{ item }}"
     permanent: true
     state: enabled
-    immediate: yes
+    immediate: true
   loop: "{{ firewall_allowed_services }}"
   when: firewall_allowed_services | length > 0
   notify: reload firewalld

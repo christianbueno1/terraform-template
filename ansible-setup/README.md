@@ -67,3 +67,41 @@ touch roles/firewall/meta/main.yml
 # run playbook
 ansible-playbook -i inventory.ini firewall_setup.yml
 ```
+
+## Ejemplo: agregar puerto 9000/tcp sin tocar ninguna variable permanente:
+```bash
+# ansible-playbook -i inventory.ini firewall_setup.yml -e '{"firewall_allowed_ports":
+
+# error
+# ansible-playbook -i inventory.ini firewall_setup.yml \
+#   -e "firewall_extra_ports=['9000/tcp']"
+
+# use JSON
+# Usa SIEMPRE JSON en CLI:
+# add
+ansible-playbook -i inventory.ini firewall_setup.yml \
+  -e '{"firewall_extra_ports": ["9000/tcp"]}'
+
+# Si quieres añadir varios:
+ansible-playbook -i inventory.ini firewall_setup.yml \
+  -e "firewall_extra_ports=['9000/tcp','8080/tcp','5000/tcp']"
+
+# remove port
+ansible-playbook -i inventory.ini firewall_setup.yml \
+  -e "firewall_remove_ports=['9000/tcp']"
+
+# JSON
+ansible-playbook -i inventory.ini firewall_setup.yml \
+  -e '{"firewall_remove_ports": ["3000/tcp"]}'
+
+
+# at the same time add and remove
+ansible-playbook -i inventory.ini firewall_setup.yml \
+  -e "firewall_extra_ports=['9000/tcp']" \
+  -e "firewall_remove_ports=['5173/tcp']"
+
+# JSON
+ansible-playbook -i inventory.ini firewall_setup.yml \
+  -e '{"firewall_extra_ports": ["9000/tcp"], "firewall_remove_ports": ["5173/tcp"]}'
+
+```

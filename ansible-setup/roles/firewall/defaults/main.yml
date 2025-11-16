@@ -7,3 +7,9 @@ firewall_allowed_ports:
 
 # Servicios de firewalld opcionales
 firewall_allowed_services: []
+
+# Puertos adicionales dinámicos desde CLI
+firewall_extra_ports: []
+
+# Puertos a remover dinámicamente desde CLI
+firewall_remove_ports: []
