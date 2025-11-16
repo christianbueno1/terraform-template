@@ -105,3 +105,21 @@ ansible-playbook -i inventory.ini firewall_setup.yml \
   -e '{"firewall_extra_ports": ["9000/tcp"], "firewall_remove_ports": ["5173/tcp"]}'
 
 ```
+
+
+## Aquí tienes los comandos exactos en zsh para crear toda la estructura del rol n8n con sus directorios y archivos.
+```bash
+# Crear estructura base del rol
+mkdir -p roles/n8n/{defaults,tasks,templates}
+
+# Crear archivos dentro de cada directorio
+touch roles/n8n/defaults/main.yml
+touch roles/n8n/tasks/main.yml
+touch roles/n8n/tasks/pod.yml
+touch roles/n8n/tasks/container.yml
+touch roles/n8n/tasks/systemd.yml
+touch roles/n8n/templates/n8n.service.j2
+
+```
+# Ahora, usando esa IP, puedes acceder a tu instancia n8n desde cualquier navegador apuntando a:
+http://167.99.57.214:5678
