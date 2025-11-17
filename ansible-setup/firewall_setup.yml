@@ -1,14 +1,16 @@
 ---
-- hosts: all
-  become: yes
+- name: Configure firewall
+  hosts: all
+  become: true
 
-  vars:
-    firewall_allowed_ports:
-      - "22/tcp"     # SSH
-      - "80/tcp"     # HTTP
-      - "443/tcp"    # HTTPS
-      - "3000/tcp"   # FastAPI
-      - "5173/tcp"   # Vite dev server
+  # vars:
+  #   firewall_allowed_ports:
+  #     - "22/tcp"     # SSH
+  #     - "80/tcp"     # HTTP
+  #     - "443/tcp"    # HTTPS
+  #     # - "3000/tcp"   # FastAPI
+  #     # - "5173/tcp"   # Vite dev server
+  #     # - "5678/tcp"   # n8n
 
   roles:
     - firewall

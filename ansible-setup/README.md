@@ -24,7 +24,7 @@ ssh -i ~/.ssh/id_ed25519_do chris@167.99.57.214
 
 # firewalld
 # run the playbook
-ansible-playbook -i inventory.ini firewalld_setup.yml
+ansible-playbook -i inventory.ini firewall_setup.yml
 
 
 ```
@@ -64,8 +64,25 @@ touch roles/firewall/handlers/main.yml
 touch roles/firewall/defaults/main.yml
 touch roles/firewall/meta/main.yml
 
+# caddy role
+mkdir -p roles/caddy/{tasks,handlers,defaults,meta}
+touch roles/caddy/tasks/main.yml
+touch roles/caddy/handlers/main.yml
+touch roles/caddy/defaults/main.yml
+touch roles/caddy/meta/main.yml
+
 # run playbook
+ansible-playbook -i inventory.ini create_chris.yml
+
 ansible-playbook -i inventory.ini firewall_setup.yml
+
+ansible-playbook -i inventory.ini setup.yml
+
+# master playbook
+./update-inventory-ip.sh
+ansible-playbook -i inventory.ini setup.yml
+
+
 ```
 
 ## Ejemplo: agregar puerto 9000/tcp sin tocar ninguna variable permanente:
@@ -91,12 +108,14 @@ ansible-playbook -i inventory.ini firewall_setup.yml \
 
 # remove port
 ansible-playbook -i inventory.ini firewall_setup.yml \
-  -e "firewall_remove_ports=['9000/tcp']"
+  -e "firewall_remove_ports=['5678/tcp']"
 
 # JSON
 ansible-playbook -i inventory.ini firewall_setup.yml \
   -e '{"firewall_remove_ports": ["3000/tcp"]}'
-
+# remove some port
+ansible-playbook -i inventory.ini firewall_setup.yml \
+  -e "firewall_remove_ports=['3000/tcp','5173/tcp']"
 
 # at the same time add and remove
 ansible-playbook -i inventory.ini firewall_setup.yml \
@@ -126,3 +145,14 @@ touch roles/n8n/templates/n8n.service.j2
 ```
 # Ahora, usando esa IP, puedes acceder a tu instancia n8n desde cualquier navegador apuntando a:
 http://167.99.57.214:5678
+
+## test closed ports
+```bash
+# from server
+firewall-cmd --list-ports
+
+
+# from local
+nc -zv 165.22.37.179 5678
+nc -zv 165.22.37.179 3000
+nc -zv 165.22.37.179 5173

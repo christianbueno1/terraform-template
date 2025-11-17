@@ -172,3 +172,62 @@ Automatic Loading: Like terraform.tfvars, a file named opentofu.tfvars would lik
 - **For sensitive data:** Use a custom .tfvars file (e.g., secrets.tfvars) and load it explicitly with -var-file. Crucially, never commit this file to version control in plain text.
 - **For environment-specific variables:** Use *.auto.tfvars (e.g., dev.auto.tfvars, prod.auto.tfvars) for automatic loading.
 - **For general, non-sensitive variables:** terraform.tfvars (or opentofu.tfvars if using OpenTofu) is appropriate for automatic loading of common variables.
+
+
+# Cloudflare API Token Permissions
+## using curl
+```bash
+
+export CLOUDFLARE_API_TOKEN=$(cat ~/Documents/cloudflare-api-token.txt)
+export CF_API_TOKEN=$(cat ~/Documents/cloudflare-api-token.txt)
+
+curl "https://api.cloudflare.com/client/v4/user/tokens/verify" \
+-H "Authorization: Bearer v2bKIAH9aMgHM4UiDpjLkL6mniYz7Xtzqzhosmf4"
+
+curl "https://api.cloudflare.com/client/v4/user/tokens/verify" \
+-H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" | jq '.'
+
+curl -s -X GET "https://api.cloudflare.com/client/v4/zones" \
+     -H "Authorization: Bearer $CF_API_TOKEN" \
+     -H "Content-Type: application/json" | jq
+
+ZONE_ID="your_zone_id_here"
+
+curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records" \
+     -H "Authorization: Bearer $CF_API_TOKEN" \
+     -H "Content-Type: application/json" | jq
+
+
+# activate Proxied
+export DOMAIN="christianbueno.tech"
+
+#
+RECORD_NAME="n8nai"
+RECORD_ID=$(curl -s -X GET \
+  "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records?type=A&name=$RECORD_NAME.$DOMAIN" \
+  -H "Authorization: Bearer $CF_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  | jq -r '.result[0].id')
+
+echo $RECORD_ID
+
+# proxied to true.
+curl -X PUT "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID" \
+     -H "Authorization: Bearer $CF_API_TOKEN" \
+     -H "Content-Type: application/json" \
+     --data "{
+        \"type\": \"A\",
+        \"name\": \"n8nai.$DOMAIN\",
+        \"content\": \"$DROPLET_IP\",
+        \"ttl\": 1,
+        \"proxied\": true
+     }"
+
+
+# verify
+curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID" \
+  -H "Authorization: Bearer $CF_API_TOKEN" \
+  -H "Content-Type: application/json" | jq
+
+
+```

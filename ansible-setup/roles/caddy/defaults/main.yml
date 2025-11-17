@@ -1,0 +1,3 @@
+caddy_domain: "n8nai.christianbueno.tech"
+# caddy_domain: "{{ lookup('env', 'CADDY_DOMAIN') }}"
+

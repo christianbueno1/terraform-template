@@ -31,7 +31,6 @@ podman pod create \
   -p 5678:5678
 
 
-
 # Crear contenedor n8n dentro de su pod:
 podman run -d \
   --name n8n \

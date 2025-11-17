@@ -1,18 +1,18 @@
 - name: Configure administrative user chris
   hosts: droplet
-  become: yes
+  become: true
   tasks:
 
     - name: Ensure user chris exists
-      user:
+      ansible.builtin.user:
         name: chris
         shell: /bin/bash
         groups: wheel
-        append: yes
-        create_home: yes
+        append: true
+        create_home: true
 
     - name: Create .ssh directory for chris
-      file:
+      ansible.builtin.file:
         path: /home/chris/.ssh
         state: directory
         owner: chris
@@ -20,7 +20,7 @@
         mode: '0700'
 
     - name: Add SSH public key for chris
-      copy:
+      ansible.builtin.copy:
         src: ~/.ssh/id_ed25519_do.pub
         dest: /home/chris/.ssh/authorized_keys
         owner: chris
@@ -28,7 +28,7 @@
         mode: '0600'
 
     - name: Allow wheel group passwordless sudo
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/sudoers
         regexp: '^%wheel'
         line: '%wheel ALL=(ALL) NOPASSWD: ALL'

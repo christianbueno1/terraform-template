@@ -1,0 +1,10 @@
+---
+- name: Full server setup (firewall + caddy + n8n + users)
+  hosts: all
+  become: true
+
+  roles:
+    # - firewall
+    - caddy
+    # - podman-n8n      # (optional if you want)
+    # - users           # (optional)
