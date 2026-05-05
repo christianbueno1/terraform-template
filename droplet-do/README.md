@@ -8,18 +8,18 @@ Usage (local)
 2. Provide your DigitalOcean API token. Options:
    - Create `secrets.auto.tfvars` with `do_token = "<TOKEN>"` (recommended for local dev)
    - Export `TF_VAR_do_token` in your shell before running OpenTofu.
-      ```
+      ```bash
       export TF_VAR_do_token="your_digitalocean_token_here"
       ```
    - Terraform CLI arguments: Pass the value directly with the -var flag during terraform plan or terraform apply.
-      ```
+      ```bash
       terraform apply -var="do_token=your_digitalocean_token_here"
       ```
 Example (local):
 
 Create `secrets.auto.tfvars` next to these files with:
 
-```
+```bash
 do_token = "your-digitalocean-token-here"
 ```
 
@@ -37,6 +37,15 @@ tofu apply "plan.tfplan"
 
 # show outputs
 tofu output droplet_ip
+
+
+# After update a tf file
+# delete the old plan
+rm -f plan.tfplan
+tofu init -upgrade
+tofu apply
+
+
 ```
 
 Customizing

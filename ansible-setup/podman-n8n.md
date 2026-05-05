@@ -6,7 +6,7 @@ podman network create n8n-net
 
 
 # 📦 2. Crear volúmenes persistentes
-podman volume create n8n_data
+podman volume create n8n_data && \
 podman volume create n8n_pgdata
 
 # 🐘 3. Crear el Pod para PostgreSQL

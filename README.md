@@ -186,6 +186,9 @@ curl "https://api.cloudflare.com/client/v4/user/tokens/verify" \
 
 curl "https://api.cloudflare.com/client/v4/user/tokens/verify" \
 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" | jq '.'
+#
+curl "https://api.cloudflare.com/client/v4/user/tokens/verify" \
+-H "Authorization: Bearer ${CF_API_TOKEN}" | jq '.'
 
 curl -s -X GET "https://api.cloudflare.com/client/v4/zones" \
      -H "Authorization: Bearer $CF_API_TOKEN" \
@@ -210,6 +213,7 @@ RECORD_ID=$(curl -s -X GET \
   | jq -r '.result[0].id')
 
 echo $RECORD_ID
+export RECORD_ID=70600b83769d5d407e0a648e3e35689e
 
 # proxied to true.
 curl -X PUT "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID" \
@@ -228,6 +232,22 @@ curl -X PUT "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RE
 curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID" \
   -H "Authorization: Bearer $CF_API_TOKEN" \
   -H "Content-Type: application/json" | jq
+
+# update the IP address of the record
+# use the value from the droplet output `tofu output droplet_ip`
+# use raw to get plain output without quotes
+export DROPLET_IP=$(tofu output -raw droplet_ip)
+#
+curl -X PATCH "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID" \
+     -H "Authorization: Bearer $CF_API_TOKEN" \
+     -H "Content-Type: application/json" \
+     --data "{
+        \"type\": \"A\",
+        \"name\": \"n8nai.$DOMAIN\",
+        \"content\": \"$DROPLET_IP\",
+        \"ttl\": 1,
+        \"proxied\": true
+     }" | jq
 
 
 ```

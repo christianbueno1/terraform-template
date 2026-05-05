@@ -25,7 +25,14 @@ ssh -i ~/.ssh/id_ed25519_do chris@167.99.57.214
 # firewalld
 # run the playbook
 ansible-playbook -i inventory.ini firewall_setup.yml
+# 
+# for Caddy
+ansible-playbook -i inventory.ini setup.yml
 
+
+# read setup
+# you can run all in one go
+ansible-playbook -i inventory.ini setup.yml
 
 ```
 
